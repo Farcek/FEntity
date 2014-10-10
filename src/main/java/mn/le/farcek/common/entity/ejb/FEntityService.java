@@ -37,7 +37,7 @@ import mn.le.farcek.common.utils.FCollectionUtils;
  */
 public abstract class FEntityService {//implements FEntityServiceInterface {
 
-    protected boolean debug = false;
+    private boolean debug = false;
 
     public Mode getMode() {
         return Mode.JTA;
@@ -50,6 +50,10 @@ public abstract class FEntityService {//implements FEntityServiceInterface {
 
     public void setDebugMode(boolean flag) {
         debug = flag;
+    }
+
+    public boolean isDebug() {
+        return debug;
     }
 
     public abstract EntityManager getEntityManager();
@@ -113,7 +117,10 @@ public abstract class FEntityService {//implements FEntityServiceInterface {
         }
     }
 
-    
+    public void ServiceRun(FServiceRunner serviceRunner) throws Exception {
+        serviceRunner.run(this);
+    }
+
     public <T extends FEntity> void doCreate(Class<T> entityClass, T enity) throws Exception {
         if (entityClass == null || enity == null) {
             throw new NullPointerException();
@@ -141,11 +148,10 @@ public abstract class FEntityService {//implements FEntityServiceInterface {
         if (model == null) {
             throw new RuntimeException("can not update. not exists entity. entity=" + enity);
         }
-        
-        
+
         transactionBegin();
         try {
-            
+
             getEntityManager().merge(enity);
             transactionCommit();
         } catch (RuntimeException ex) {
