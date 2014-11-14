@@ -234,6 +234,9 @@ public abstract class FEntityService {//implements FEntityServiceInterface {
 
     //-- entityBy
     public <T extends FEntity> T entityById(Class<T> entityClass, Serializable id) {
+        if (id == null) {
+            return null;
+        }
         return getEntityManager().find(entityClass, id);
     }
 
@@ -250,7 +253,7 @@ public abstract class FEntityService {//implements FEntityServiceInterface {
 
             int i = 0;
             for (OrderByItem it : orders) {
-                if (i > 0) {
+                if (i++ > 0) {
                     cr.append(", ");
                 }
                 cr.append("o.").append(it.getFieldName()).append(" ").append(it.isAscending() ? "ASC" : "DESC");
@@ -335,6 +338,21 @@ public abstract class FEntityService {//implements FEntityServiceInterface {
         return entitysBy(entityClass, filters, orders, 0, 0);
     }
 
+    public <T extends FEntity> Long countBy(Class<T> entityClass, FilterItem[] filters) {
+        StringBuilder cr = new StringBuilder("SELECT count(o) FROM ").append(getEntityName(entityClass)).append(" o");
+        generateFilter(cr, filters);
+
+        TypedQuery<Long> q = getEntityManager().createQuery(cr.toString(), Long.class);
+        pushFilterParam(q, filters);
+
+        try {
+            return q.getSingleResult();
+        } catch (NoResultException e) {
+            return 0l;
+        }
+
+    }
+
     public <T extends FEntity> List<T> entitysBy(Class<T> entityClass, FilterItem[] filters, OrderByItem[] orders, int maxResult, int firstResult) {
         StringBuilder cr = new StringBuilder("SELECT o FROM ").append(getEntityName(entityClass)).append(" o");
         generateFilter(cr, filters);
@@ -344,7 +362,7 @@ public abstract class FEntityService {//implements FEntityServiceInterface {
 
             int i = 0;
             for (OrderByItem it : orders) {
-                if (i > 0) {
+                if (i++ > 0) {
                     cr.append(", ");
                 }
                 cr.append("o.").append(it.getFieldName()).append(" ").append(it.isAscending() ? "ASC" : "DESC");
@@ -473,6 +491,22 @@ public abstract class FEntityService {//implements FEntityServiceInterface {
         return query.getResultList();
     }
 
+    // --- executed 
+    public int executeUpdateOrDelete(String jpql, FParamItem... params) {
+        if (debug) {
+            System.out.println("executeUpdateOrDelete >> " + jpql);
+            printParam(params);
+        }
+
+        Query q = getEntityManager().createQuery(jpql);
+        if (FCollectionUtils.notEmpty(params)) {
+            for (FParamItem p : params) {
+                p.pushParam(q);
+            }
+        }
+        return q.executeUpdate();
+    }
+
     public Class<?> getIdType(Class<? extends FEntity> entityClass) {
         EntityType<?> meta = getEntityManager().getMetamodel().entity(entityClass);
         Type<?> t = meta.getIdType();
@@ -484,7 +518,7 @@ public abstract class FEntityService {//implements FEntityServiceInterface {
         //return getEntityManager().unwrap(Session.class).getNextSequenceNumberValue(entityClass);
     }
 
-    // -- entra
+    // -- extra
     private void printParam(FParamItem[] params) {
         if (debug) {
             if (params != null && params.length > 0) {

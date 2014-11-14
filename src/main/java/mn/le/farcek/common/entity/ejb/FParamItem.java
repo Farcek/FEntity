@@ -1,5 +1,6 @@
 package mn.le.farcek.common.entity.ejb;
 
+import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 
 
@@ -34,7 +35,7 @@ public class FParamItem {
         return value;
     }
 
-    void pushParam(TypedQuery query) {
+    void pushParam(Query query) {
         if (param != null)
             query.setParameter(param, value);
         else if (paramIndex > -1)
