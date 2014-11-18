@@ -338,7 +338,7 @@ public abstract class FEntityService {//implements FEntityServiceInterface {
         return entitysBy(entityClass, filters, orders, 0, 0);
     }
 
-    public <T extends FEntity> Long countBy(Class<T> entityClass, FilterItem[] filters) {
+    public <T extends FEntity> Long countBy(Class<T> entityClass, FilterItem... filters) {
         StringBuilder cr = new StringBuilder("SELECT count(o) FROM ").append(getEntityName(entityClass)).append(" o");
         generateFilter(cr, filters);
 
