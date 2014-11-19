@@ -1,57 +1,56 @@
 package mn.le.farcek.common.entity.criteria;
 
+import java.util.Objects;
 
 public class OrderByItem {
-    
+
     private final String fieldName;
-    private boolean ascending = true;
+    private final OrderByType type;
 
-
-    public OrderByItem(String fieldName) {        
+    public OrderByItem(String fieldName) {
         this.fieldName = fieldName;
+        type = OrderByType.ASC;
     }
 
     public OrderByItem(String fieldName, boolean ascending) {
         this.fieldName = fieldName;
-        this.ascending = ascending;
+        type = ascending ? OrderByType.ASC : OrderByType.DESC;
     }
 
-    public boolean isAscending(){
-        return ascending;
+    public OrderByItem(String fieldName, OrderByType type) {
+        this.fieldName = fieldName;
+        this.type = type;
     }
 
-
-    public void setAscending(boolean ascending) {
-        this.ascending = ascending;
+    public OrderByType getType() {
+        return type;
     }
-
 
     public String getFieldName() {
         return fieldName;
     }
 
-
     @Override
-    public boolean equals(Object object) {
-        if (this == object) {
-            return true;
-        }
-        if (!(object instanceof OrderByItem)) {
+    public boolean equals(Object obj) {
+        if (obj == null) {
             return false;
         }
-        final OrderByItem other = (OrderByItem) object;
-        if (!(fieldName == null ? other.fieldName == null : fieldName.equals(other.fieldName))) {
+        if (getClass() != obj.getClass()) {
             return false;
         }
-        return ascending == other.ascending;
+        final OrderByItem other = (OrderByItem) obj;
+        if (!Objects.equals(this.fieldName, other.fieldName)) {
+            return false;
+        }
+        return this.type == other.type;
     }
 
     @Override
     public int hashCode() {
-        final int PRIME = 37;
-        int result = 1;
-        result = PRIME * result + ((fieldName == null) ? 0 : fieldName.hashCode());
-        result = PRIME * result + (ascending ? 0 : 1);
-        return result;
+        int hash = 5;
+        hash = 23 * hash + Objects.hashCode(this.fieldName);
+        hash = 23 * hash + Objects.hashCode(this.type);
+        return hash;
     }
+
 }

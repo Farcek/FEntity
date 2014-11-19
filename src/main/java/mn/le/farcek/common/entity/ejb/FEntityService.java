@@ -26,6 +26,7 @@ import javax.transaction.Transactional;
 import javax.transaction.UserTransaction;
 
 import mn.le.farcek.common.entity.FEntity;
+import mn.le.farcek.common.entity.criteria.FCriteriaBuilder;
 import mn.le.farcek.common.entity.criteria.FilterItem;
 import mn.le.farcek.common.entity.criteria.OrderByItem;
 import mn.le.farcek.common.utils.FCollectionUtils;
@@ -256,7 +257,7 @@ public abstract class FEntityService {//implements FEntityServiceInterface {
                 if (i++ > 0) {
                     cr.append(", ");
                 }
-                cr.append("o.").append(it.getFieldName()).append(" ").append(it.isAscending() ? "ASC" : "DESC");
+                cr.append("o.").append(it.getFieldName()).append(" ").append(it.getType().name());
             }
         }
 
@@ -353,6 +354,23 @@ public abstract class FEntityService {//implements FEntityServiceInterface {
 
     }
 
+    public <T extends FEntity> FListResult<T> entitysBy(final FCriteriaBuilder<T> criteriaBuilder) {
+        List<T> list = entitysBy(criteriaBuilder.getEntityClass(),
+                criteriaBuilder.getFilters().toArray(new FilterItem[]{}),
+                criteriaBuilder.getOrders().toArray(new OrderByItem[]{}),
+                criteriaBuilder.getLimit(), criteriaBuilder.getOffset());
+
+        FCountRunner countRunner = new FCountRunner() {
+
+            @Override
+            public long getCount() {
+                return countBy(criteriaBuilder.getEntityClass(), criteriaBuilder.getFilters().toArray(new FilterItem[]{}));
+            }
+        };
+
+        return new FListResult<>(list, countRunner);
+    }
+
     public <T extends FEntity> List<T> entitysBy(Class<T> entityClass, FilterItem[] filters, OrderByItem[] orders, int maxResult, int firstResult) {
         StringBuilder cr = new StringBuilder("SELECT o FROM ").append(getEntityName(entityClass)).append(" o");
         generateFilter(cr, filters);
@@ -365,7 +383,7 @@ public abstract class FEntityService {//implements FEntityServiceInterface {
                 if (i++ > 0) {
                     cr.append(", ");
                 }
-                cr.append("o.").append(it.getFieldName()).append(" ").append(it.isAscending() ? "ASC" : "DESC");
+                cr.append("o.").append(it.getFieldName()).append(" ").append(it.getType().name());
             }
         }
 

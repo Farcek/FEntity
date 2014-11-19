@@ -1,47 +1,28 @@
 package mn.le.farcek.common.entity.ejb;
 
 
-
-import java.util.ArrayList;
 import java.util.List;
 import mn.le.farcek.common.entity.FEntity;
 
 public class FListResult<T extends FEntity> {
-    private List<T> result;
-    private Long resultCount;
 
-    public FListResult() {
-        this(new ArrayList<T>());
+    private final List<T> list;
+    private final FCountRunner countRunner;
+
+    public FListResult(List<T> list, FCountRunner countRunner) {
+        this.list = list;
+        this.countRunner = countRunner;
     }
 
-    public FListResult(List<T> result) {
-        this(result, 0L);
+    public List<T> getList() {
+        return list;
+    }
+    
+    public long getTotalCount(){
+        return countRunner.getCount();
     }
 
-    public FListResult(List<T> result, Long resultCount) {
-        this.result = result;
-        this.resultCount = resultCount;
+    public FCountRunner getCountRunner() {
+        return countRunner;
     }
-
-
-    public List<T> getResult() {
-        return result;
-    }
-
-    public Long getResultCount() {
-        if (resultCount == null)
-            resultCount = new Long(0);
-        return resultCount;
-    }
-
-
-    public void setResult(List<T> result) {
-        this.result = result;
-    }
-
-    public void setResultCount(Long resultCount) {
-        this.resultCount = resultCount;
-    }
-
-
 }
