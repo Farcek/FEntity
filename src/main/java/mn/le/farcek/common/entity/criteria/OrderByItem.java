@@ -3,17 +3,15 @@ package mn.le.farcek.common.entity.criteria;
 
 public class OrderByItem {
     
-    private String fieldName;
+    private final String fieldName;
     private boolean ascending = true;
 
 
-    public OrderByItem(String fieldName) {
-        super();
+    public OrderByItem(String fieldName) {        
         this.fieldName = fieldName;
     }
 
     public OrderByItem(String fieldName, boolean ascending) {
-        super();
         this.fieldName = fieldName;
         this.ascending = ascending;
     }
@@ -45,10 +43,7 @@ public class OrderByItem {
         if (!(fieldName == null ? other.fieldName == null : fieldName.equals(other.fieldName))) {
             return false;
         }
-        if (ascending != other.ascending) {
-            return false;
-        }
-        return true;
+        return ascending == other.ascending;
     }
 
     @Override
