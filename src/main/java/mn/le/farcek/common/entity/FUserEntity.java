@@ -3,13 +3,12 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package mn.le.farcek.common.entity.ejb;
+package mn.le.farcek.common.entity;
 
 /**
  *
  * @author Farcek
  */
-public interface FServiceRunner {
-
-    public void run(FEntityService entityService) throws FServiceException;
+public interface FUserEntity extends FEntity{
+    
 }

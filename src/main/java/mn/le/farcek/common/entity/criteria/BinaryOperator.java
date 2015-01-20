@@ -1,7 +1,6 @@
 package mn.le.farcek.common.entity.criteria;
 
 import javax.persistence.Query;
-import javax.persistence.metamodel.SingularAttribute;
 
 public class BinaryOperator implements FilterItem {
 
@@ -15,19 +14,12 @@ public class BinaryOperator implements FilterItem {
         this.operator = operator;
     }
 
-    public BinaryOperator(SingularAttribute field, Object value, String operator) {
-        this(field.getName(), value, operator);
-
-    }
 
     public BinaryOperator(String field, Object value) {
         this.field = field;
         this.value = value;
     }
 
-    public BinaryOperator(SingularAttribute field, Object value) {
-        this(field.getName(), value);
-    }
 
     @Override
     public String toString() {

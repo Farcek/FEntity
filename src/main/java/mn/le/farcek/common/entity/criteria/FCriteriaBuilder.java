@@ -71,16 +71,18 @@ public class FCriteriaBuilder<T extends FEntity> {
         return limit;
     }
 
-    public void setLimit(int limit) {
+    public FCriteriaBuilder<T> setLimit(int limit) {
         this.limit = limit;
+        return this;
     }
 
     public int getOffset() {
         return offset;
     }
 
-    public void setOffset(int offset) {
+    public FCriteriaBuilder<T> setOffset(int offset) {
         this.offset = offset;
+        return this;
     }
 
 }
